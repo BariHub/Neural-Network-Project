@@ -1,4 +1,4 @@
-#include "Class_Sequential.h"
+#include "Class_Model.h"
 
 void Sequential::add(Layer* layer)
 {

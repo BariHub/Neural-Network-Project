@@ -139,26 +139,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Activation_Functions.cpp" />
     <ClCompile Include="Activation_Functions.h" />
     <ClCompile Include="Class_Layer.cpp" />
     <ClCompile Include="Class_LossFunction.cpp" />
     <ClCompile Include="Class_Optimizer.cpp" />
-    <ClCompile Include="Class_Sequential.cpp" />
-    <ClCompile Include="CNN.cpp" />
-    <ClCompile Include="FileIO.cpp" />
-    <ClCompile Include="Neural_Nets.cpp" />
+    <ClCompile Include="Class_Model.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Class_Layer.h" />
     <ClInclude Include="Class_LossFunction.h" />
     <ClInclude Include="Class_Optimizer.h" />
-    <ClInclude Include="Class_Sequential.h" />
-    <ClInclude Include="CNN.h" />
-    <ClInclude Include="FileIO.h" />
-    <ClInclude Include="Functions.h" />
+    <ClInclude Include="Class_Model.h" />
     <ClInclude Include="myUtility.h" />
-    <ClInclude Include="Neural_Nets.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

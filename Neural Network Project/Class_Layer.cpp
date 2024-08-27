@@ -1,8 +1,10 @@
 #include "Class_Layer.h"
 
-Dense::Dense(int nodes, int input_dim)
+Dense::Dense(int input_dim, int nodes)
 {
   this->mNeurons = nodes; // number of neurons in layer x
+  this->mInputDimension = input_dim; // number of inputs coming into the layer
+
   weights = new float* [mNeurons]; // number of expected inputs stored into weights[x][]
   weightGradient = new float* [mNeurons];
 

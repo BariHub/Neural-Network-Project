@@ -1,8 +1,9 @@
 #pragma once
 #include <Eigen/Dense>
+#include <cstdlib>
 #include "Activation_Functions.h"
 #include "Class_Optimizer.h"
-#include <cstdlib>
+#include "myUtility.h"
 
 class Layer {
 public:
