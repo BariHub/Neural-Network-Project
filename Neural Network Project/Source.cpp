@@ -11,33 +11,6 @@ using namespace std;
 
 int main() 
 {
-  float** inputs;
-  float** outputs;
-  inputs = new float* [4];
-  outputs = new float* [4];
-
-  for (int i = 0; i < 4; ++i)
-  {
-    inputs[i] = new float[2];
-    outputs[i] = new float[1];
-  }
-
-  inputs[0][0] = 0.0f;
-  inputs[0][1] = 0.0f;
-  outputs[0][0] = 0.0f;
-
-  inputs[1][0] = 0.0f;
-  inputs[1][1] = 1.0f;
-  outputs[1][0] = 0.0f;
-
-  inputs[2][0] = 1.0f;
-  inputs[2][1] = 0.0f;
-  outputs[2][0] = 0.0f;
-
-  inputs[3][0] = 1.0f;
-  inputs[3][1] = 1.0f;
-  outputs[3][0] = 1.0f;
-
   Sequential model;
   Dense* d1 = new Dense(2, 10);
   Dense* d2 = new Dense(10, 1);
@@ -60,9 +33,7 @@ int main()
   model.train(inputs, outputs, 4, 1000, 1);
 
   float* predictions = model.predict(inputs[3]);
-
-
-  std::cout << "Input: " << inputs[3][0] << " " << inputs[3][1] << " - Target: " << outputs[3][0] << " - Prediction : " << predictions[0] << std::endl;
-  // Output or process predictions
   return 0;
 }
+
+Confusion Matrix : Implement a confusion matrix for classification tasks to analyze where the model is making mistakes.
