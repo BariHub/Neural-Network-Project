@@ -6,20 +6,21 @@
 #include "Class_Optimizer.h"
 #include "myUtility.h"
 
-class Layer {
+class Layer 
+{
 public:
   virtual float* forward(float* input) = 0;
   virtual float* backward(float* gradient) = 0;
   virtual void update_weights(Optimizer*) = 0;
 };
 
-class Dense : public Layer {
+class Dense : public Layer 
+{
 public:
-  Dense(int, int);
-  float* forward(float*) override;
-  float* backward(float*) override;
-  void set_activation(std::function<float(float)> activation);
-  void update_weights(Optimizer*) override;
+  Dense(int input_dim, int nodes, Activation* function);
+  float* forward(float* input) override;
+  float* backward(float* gradient) override;
+  void update_weights(Optimizer* optimizer) override;
   void displayWeights() const;
   void load_weights(std::ifstream& infile);
   //void save_weights(std::ifstream& infile);
@@ -34,5 +35,5 @@ private:
   float** weightGradient;
   float* bias;
   float* biasGradient;
-  std::function<float(float)> mActivationFunction;
+  Activation* mFunction;
 };

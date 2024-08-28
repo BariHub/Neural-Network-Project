@@ -1,9 +1,8 @@
 #include "Class_Layer.h"
 
-Dense::Dense(int input_dim, int nodes)
+Dense::Dense(int input_dim, int nodes, Activation* function) : mNeurons(nodes), mInputDimension(input_dim)
 {
-  this->mNeurons = nodes; // number of neurons in layer x
-  this->mInputDimension = input_dim; // number of inputs coming into the layer
+  mFunction = function;
 
   weights = new float* [mNeurons]; // number of expected inputs stored into weights[x][]
   weightGradient = new float* [mNeurons];
@@ -41,9 +40,7 @@ float* Dense::forward(float* input)
       output[i] += this->input[j] * weights[i][j];
     }
     // Apply activation function if set
-    if (mActivationFunction) {
-      output[i] = mActivationFunction(output[i]);
-    }
+    output[i] = mFunction->calculate(output[i]);
   }
   return output;
 }
@@ -79,11 +76,6 @@ float* Dense::backward(float* gradient)
   }
 
   return previousOutputGradient; // Return the gradient for the previous layer
-}
-
-void Dense::set_activation(std::function<float(float)> activation)
-{
-  mActivationFunction = activation;
 }
 
 void Dense::update_weights(Optimizer* optimizer)
