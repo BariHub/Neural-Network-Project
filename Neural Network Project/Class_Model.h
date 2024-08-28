@@ -4,6 +4,8 @@
 #include "Class_LossFunction.h"
 #include "Activation_Functions.h"
 #include <vector>
+#include <iostream>
+#include <fstream>
 
 class Model {
 public:
@@ -17,11 +19,15 @@ class Sequential {
 public:
   void add(Layer* layer);
   void compile(Optimizer* optimizer, LossFunction* loss_function);
-  void train(float** inputs, float** targets, int epochs, int batch_size);
+  void train(float** inputs, float** targets, int num_DataPoints, int epochs, int batch_size);
   float* predict(float* input);
+  void displayWeights() const;
+  void load_weights(const std::string& file_path);
+  //void save_weights(const std::string& file_path);
 
-private:
+  ~Sequential();
   std::vector<Layer*> layers;
+private:
   Optimizer* optimizer;
   LossFunction* loss_function;
   

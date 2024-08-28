@@ -1,6 +1,7 @@
 #pragma once
 #include <Eigen/Dense>
 #include <cstdlib>
+#include <iostream>
 #include "Activation_Functions.h"
 #include "Class_Optimizer.h"
 #include "myUtility.h"
@@ -19,7 +20,11 @@ public:
   float* backward(float*) override;
   void set_activation(std::function<float(float)> activation);
   void update_weights(Optimizer*) override;
+  void displayWeights() const;
+  void load_weights(std::ifstream& infile);
+  //void save_weights(std::ifstream& infile);
 
+  ~Dense();
 private:
   int mNeurons;
   int mInputDimension;

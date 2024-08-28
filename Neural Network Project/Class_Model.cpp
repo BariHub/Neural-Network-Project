@@ -11,15 +11,16 @@ void Sequential::compile(Optimizer* optimizer, LossFunction* loss_function)
   this->loss_function = loss_function;
 }
 
-void Sequential::train(float** inputs, float** targets, int epochs, int batch_size = 1)
+void Sequential::train(float** inputs, float** targets, int num_DataPoints, int epochs, int batch_size = 1)
 {
-  for (int epoch = 0; epoch < epochs; ++epoch) {
-    // Implement batch training loop
-    for (int batch = 0; batch < batch_size; ++batch) { // potentially wrong?
-      // Forward and backward pass
-      float* predictions = forward(inputs[batch]);
-      backward(targets[batch], predictions);
+  for (int epoch = 0; epoch < epochs; ++epoch) 
+  {
+    for (int DataPoint = 0; DataPoint < num_DataPoints; ++DataPoint)
+    {
+      float* predictions = forward(inputs[DataPoint]);
+      backward(targets[DataPoint], predictions);
       update_weights();
+      displayWeights();
     }
   }
 }
@@ -29,10 +30,49 @@ float* Sequential::predict(float* input)
   return forward(input);
 }
 
+void Sequential::displayWeights() const
+{
+  int i = 0;
+  for (std::vector<Layer*>::const_iterator it = layers.begin(); it < layers.end(); ++it)
+  {
+    i++;
+    std::cout << "Layer " << i << ": " << std::endl;
+    dynamic_cast<Dense*>(*it)->displayWeights();
+    std::cout << std::endl;
+  }
+}
+
+void Sequential::load_weights(const std::string& file_path)
+{
+  std::ifstream infile;
+  infile.open(file_path);
+
+  if (!infile) {
+    std::cerr << "Failed to open weights file: " << file_path << std::endl;
+    return;
+  }
+
+  for (std::vector<Layer*>::iterator::value_type& layer : layers) {
+    Dense* dense_layer = dynamic_cast<Dense*>(layer);
+    if (dense_layer) {
+      dense_layer->load_weights(infile);
+    }
+  }
+
+  infile.close();
+}
+
+Sequential::~Sequential()
+{
+  delete optimizer;
+  delete loss_function;
+}
+
 float* Sequential::forward(float* input)
 {
   float* output = input;
-  for (Layer* layer : layers) {
+  for (Layer* layer : layers) 
+  {
     output = layer->forward(output);
   }
   return output;

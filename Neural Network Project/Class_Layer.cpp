@@ -26,7 +26,7 @@ Dense::Dense(int input_dim, int nodes)
 
   for (int i = 0; i < mNeurons; ++i)
   {
-    bias[i] = 0.0f;
+    bias[i] = utilities::myRand(0.0f, 1.0f);
     biasGradient[i] = 0.0f;
   }
 }
@@ -96,4 +96,43 @@ void Dense::update_weights(Optimizer* optimizer)
     }
     optimizer->update(bias[i], biasGradient[i]);
   }
+}
+
+void Dense::displayWeights() const
+{
+  for (int i = 0; i < mNeurons; ++i)
+  {
+    std::cout << "Neuron " << i << ": " << std::endl;
+    std::cout << bias[i] << " ";
+    for (int j = 0; j < mInputDimension; ++j)
+    {
+      std::cout << weights[i][j] << " ";
+    }
+    std::cout << std::endl;
+  }
+}
+
+void Dense::load_weights(std::ifstream& infile)
+{
+  return;
+}
+
+Dense::~Dense()
+{
+  for (int i = 0; i < mInputDimension; ++i)
+  {
+    delete[] weights[i];
+  }
+  delete[] weights;
+
+  for (int i = 0; i < mInputDimension; ++i) 
+  {
+    delete[] weightGradient[i];
+  }
+  delete[] weightGradient;
+
+  delete[] input;
+  delete[] output;
+  delete[] bias;
+  delete[] biasGradient;
 }
