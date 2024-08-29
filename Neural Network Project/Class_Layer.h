@@ -29,13 +29,13 @@ public:
 private:
   int mNeurons;
   int mInputDimension;
-  float* mLinearTransformationSum;
   float* mInput;
   float* mOutput;
   float** weights;
   float** weightGradient;
   float* bias;
   float* biasGradient;
+  float* mLinearTransformationSum;
   Activation* mFunction;
   float applyLinearTransformation(int node, float* inputs) const;
 };

@@ -36,10 +36,10 @@ float* Dense::forward(float* input)
 {
   this->mInput = input;
 
-  for (int i = 0; i < mNeurons; ++i) 
+  for (int nodeIndex = 0; nodeIndex < mNeurons; ++nodeIndex)
   {
-    mLinearTransformationSum[i] = applyLinearTransformation(i, mInput);
-    mOutput[i] = mFunction->calculate(mLinearTransformationSum[i]);
+    mLinearTransformationSum[nodeIndex] = applyLinearTransformation(nodeIndex, mInput);
+    mOutput[nodeIndex] = mFunction->calculate(mLinearTransformationSum[nodeIndex]);
   }
   return mOutput;
 }
@@ -122,6 +122,7 @@ Dense::~Dense()
   delete[] mOutput;
   delete[] bias;
   delete[] biasGradient;
+  delete[] mLinearTransformationSum;
 }
 
 float Dense::applyLinearTransformation(int node, float* inputs) const
