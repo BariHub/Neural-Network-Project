@@ -6,7 +6,7 @@
 #include "Class_Optimizer.h"
 #include "myUtility.h"
 
-class Layer 
+class Layer
 {
 public:
   virtual float* forward(float* input) = 0;
@@ -14,7 +14,7 @@ public:
   virtual void update_weights(Optimizer*) = 0;
 };
 
-class Dense : public Layer 
+class Dense : public Layer
 {
 public:
   Dense(int input_dim, int nodes, Activation* function);
@@ -29,11 +29,13 @@ public:
 private:
   int mNeurons;
   int mInputDimension;
-  float* input;
-  float* output;
+  float* mLinearTransformationSum;
+  float* mInput;
+  float* mOutput;
   float** weights;
   float** weightGradient;
   float* bias;
   float* biasGradient;
   Activation* mFunction;
+  float applyLinearTransformation(int node, float* inputs) const;
 };

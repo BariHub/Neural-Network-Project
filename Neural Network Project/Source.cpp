@@ -54,7 +54,6 @@ int main()
   LossFunction* loss = new MeanSquaredError(1);
 
   model.compile(optimizer, loss);
-  model.displayWeights();
 
   model.train(inputs, outputs, 4, 1000, 1);
 

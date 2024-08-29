@@ -6,11 +6,13 @@ Dense::Dense(int input_dim, int nodes, Activation* function) : mNeurons(nodes), 
 
   weights = new float* [mNeurons]; // number of expected inputs stored into weights[x][]
   weightGradient = new float* [mNeurons];
+  mLinearTransformationSum = new float[mNeurons];
 
   for (int i = 0; i < mNeurons; ++i)
   {
     weights[i] = new float[input_dim]; // number of neurons in each layer
     weightGradient[i] = new float[input_dim];
+    mLinearTransformationSum[i] = 0.0f;
 
     for (int j = 0; j < input_dim; ++j)
     {
@@ -21,7 +23,7 @@ Dense::Dense(int input_dim, int nodes, Activation* function) : mNeurons(nodes), 
 
   bias = new float[mNeurons];
   biasGradient = new float[mNeurons];
-  output = new float[mNeurons];
+  mOutput = new float[mNeurons];
 
   for (int i = 0; i < mNeurons; ++i)
   {
@@ -32,17 +34,14 @@ Dense::Dense(int input_dim, int nodes, Activation* function) : mNeurons(nodes), 
 
 float* Dense::forward(float* input)
 {
-  this->input = input;
+  this->mInput = input;
 
-  for (int i = 0; i < mNeurons; ++i) {
-    output[i] = bias[i]; // this is correct, will be sum'd soon
-    for (int j = 0; j < this->mInputDimension; ++j) {
-      output[i] += this->input[j] * weights[i][j];
-    }
-    // Apply activation function if set
-    output[i] = mFunction->calculate(output[i]);
+  for (int i = 0; i < mNeurons; ++i) 
+  {
+    mLinearTransformationSum[i] = applyLinearTransformation(i, mInput);
+    mOutput[i] = mFunction->calculate(mLinearTransformationSum[i]);
   }
-  return output;
+  return mOutput;
 }
 
 float* Dense::backward(float* gradient)
@@ -50,28 +49,24 @@ float* Dense::backward(float* gradient)
   float output_BiasTerm = 1.0;
   float* output_gradient = gradient;
   float* previousOutputGradient = new float[mInputDimension];
-  
-  for (int i = 0; i < mInputDimension; ++i)
-  {
-    previousOutputGradient[i] = 0.0f;
-  }
 
   for (int i = 0; i < mNeurons; ++i)
   {
     // bias term is 1.0f from notes, we calculate the weight gradients first
-    biasGradient[i] = output_gradient[i] * output[i] * (1 - output[i]) * output_BiasTerm;
+    biasGradient[i] = output_gradient[i] * mFunction->calculateGradient(mLinearTransformationSum[i]) * output_BiasTerm;
     for (int j = 0; j < mInputDimension; ++j)
     {
-      weightGradient[i][j] = output_gradient[i] * output[i] * (1 - output[i]) * input[j];
+      weightGradient[i][j] = output_gradient[i] * mFunction->calculateGradient(mLinearTransformationSum[i]) * mInput[j];
     }
   }
 
   for (int i = 0; i < mInputDimension; ++i)
   {
+    previousOutputGradient[i] = 0.0f;
     for (int j = 0; j < mNeurons; ++j)
     {
       //calculate the previous layer output gradient second
-      previousOutputGradient[i] += output_gradient[j] * output[j] * (1 - output[j]) * weights[j][i];
+      previousOutputGradient[i] += output_gradient[j] * mFunction->calculateGradient(mLinearTransformationSum[i]) * weights[j][i];
     }
   }
 
@@ -117,14 +112,24 @@ Dense::~Dense()
   }
   delete[] weights;
 
-  for (int i = 0; i < mInputDimension; ++i) 
+  for (int i = 0; i < mInputDimension; ++i)
   {
     delete[] weightGradient[i];
   }
   delete[] weightGradient;
 
-  delete[] input;
-  delete[] output;
+  delete[] mInput;
+  delete[] mOutput;
   delete[] bias;
   delete[] biasGradient;
+}
+
+float Dense::applyLinearTransformation(int node, float* inputs) const
+{
+  float output;
+  output = bias[node]; // this is correct, will be sum'd soon
+  for (int j = 0; j < this->mInputDimension; ++j) {
+    output += mInput[j] * weights[node][j];
+  }
+  return output;
 }
