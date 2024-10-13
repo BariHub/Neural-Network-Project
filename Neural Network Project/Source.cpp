@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Class_Model.h"
 #include "Activation_Functions.h"
+#include <fstream>
 
 using namespace std;
 //Matplotlib - cpp
@@ -13,52 +14,75 @@ int main()
 {
   Sequential model;
   sigmoid* s = new sigmoid();
-  Dense* d1 = new Dense(2, 1, s);
+  Dense* d1 = new Dense(1, 1, s);
   Dense* d2 = new Dense(1, 1, s);
   //Dense* d3 = new Dense(100, 1);
   //d3->set_activation(sigmoid);
 
   float** inputs;
   float** outputs;
+  int size = 10;
 
-  inputs = new float* [4];
-  outputs = new float* [4];
+  inputs = new float* [size];
+  outputs = new float* [size];
+  float** p;
+  p = new float* [size];
 
-  for (int i = 0; i < 4; ++i)
+  for (int i = 0; i < size; ++i)
   {
-    inputs[i] = new float[2];
-    outputs[i] = new float[2];
+    inputs[i] = new float[1];
+    outputs[i] = new float[1];
+    p[i] = new float[1];
   }
 
-  inputs[0][0] = 0.0f;
-  inputs[0][1] = 0.0f;
-  outputs[0][0] = 0.0f;
+  for (int i = 0; i < size; ++i)
+  {
+    float x = (float)(i + 1) * 0.1f;
+    inputs[i][0] = x;
+    outputs[i][0] = x * x;
+  }
+  
 
-  inputs[1][0] = 0.0f;
-  inputs[1][1] = 1.0f;
-  outputs[1][0] = 0.0f;
-
-  inputs[2][0] = 1.0f;
-  inputs[2][1] = 0.0f;
-  outputs[2][0] = 0.0f;
-
-  inputs[3][0] = 1.0f;
-  inputs[3][1] = 1.0f;
-  outputs[3][0] = 1.0f;
+  for (int i = 0; i < size; ++i)
+  {
+    float x = (float)(i + 0.5) * 0.1f;
+    p[i][0] = x;
+    std::cout << p[i][0] << " ";
+  }
 
   model.add(d1);
   model.add(d2);
   //model.add(d3);
 
-  Optimizer* optimizer = new StochasticGradientDescent(1.0f);
+  Optimizer* optimizer = new StochasticGradientDescent(0.01f);
   LossFunction* loss = new MeanSquaredError(1);
 
   model.compile(optimizer, loss);
 
-  model.train(inputs, outputs, 4, 1000, 1);
+  model.train(inputs, outputs, size, 10000, 1);
 
-  float* predictions = model.predict(inputs[3]);
-  std::cout << predictions[0];
+  float* pred = new float[size];
+  for (int i = 0; i < size; ++i)
+  {
+    pred[i] = model.predict(p[i])[0];
+  }
+
+  std::ofstream file("output.csv");
+
+  // Check if the file was successfully opened
+  if (!file.is_open()) {
+    std::cerr << "Error: Unable to create file" << std::endl;
+    return 1;
+  }
+
+  for (int i = 0; i < size; ++i)
+  {
+    file << inputs[i][0] << "," << outputs[i][0] << "," << pred[i];
+    file << std::endl;
+  }
+
+  file.close();
+
   return 0;
 }
 
